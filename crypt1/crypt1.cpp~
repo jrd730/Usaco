@@ -1,0 +1,80 @@
+/*
+ID: jrd7301
+PROG: crypt1
+LANG: C++
+*/
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <sstream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main ()
+{
+	ifstream in ("crypt1.in");
+	ofstream out ("crypt1.out");
+	
+	int N, solutions = 0;
+	int a, b, c, d, e;
+	bool notInSet[10];
+	fill (notInSet, notInSet+10, true);
+	in >> N;
+	string digits("");
+	while (in.good()){
+	  char c = in.get();
+	  if (!in.eof() && c != ' ' && c != '\n'){
+	    digits += c;
+	    notInSet[c-48] = false;
+	  }
+	}
+	for (int i=0; i<N; i++){
+	  for (int j=0; j<N; j++){
+	    for (int k=0; k<N; k++){
+	      for (int l=0; l<N; l++){
+	        for(int m=0; m<N; m++){                 
+            a = (digits[i]-48)*100 + (digits[j]-48)*10 + (digits[k]-48);
+            b = (digits[l]-48)*10  + (digits[m]-48);
+            c = a * (b%10);
+            d = a * (b/10)*10;
+            e = c + d;
+            
+            stringstream ss;
+            ss << a << b << c << d/10 << e;
+            string combined (ss.str());
+            //cout << combined << endl;
+            bool solved=true;
+            
+            if (c >= 1000)solved = false;
+            if (d >= 10000)solved = false;
+            if (e >= 10000)solved = false;             
+                        
+            for (int q = 0, length = combined.length(); q<length && solved; q++){
+              if ( notInSet[combined[q]-48] ){ 
+                solved = false;
+              }
+            }
+            
+            if (solved){
+              cout << "   "  << a << endl
+                   << " *  " << b << endl
+                   << "------"    << endl
+                   << "  "   << c << endl
+                   << " "    << d << endl
+                   << "------"    << endl
+                   << " "    << e << endl << endl;   
+              solutions++;
+            }         	            
+	        }
+	      }
+	    }
+	  }
+	}
+	cout << digits << endl;
+  cout << solutions << endl;
+  out << solutions << endl;
+	return 0;
+}
